@@ -233,23 +233,40 @@ function isHorseNameCandidate(line) {
   if (!text) return false;
   if (/^\(?\d+\.\d+\.\d+\.\d+\)?/.test(text)) return false;
   if (/万円|^\d+$|^\d+番$|^\d+頭|^\d+着|^\d+kg$|^\d+\.\d+$/.test(text)) return false;
+  if (/^[ぁ-んァ-ヴー一-龠々]{1,4}\s+[ぁ-んァ-ヴー一-龠々]{1,4}$/.test(text)) return false;
   if (/^(父|母)：|母の父|血統|調教師|騎手|馬主|生産者|単勝|馬体重|性齢|前走|前々走|3走前|4走前|メニュー|基本|拡大|縮小|リセット$/.test(text)) return false;
-  if (/(Farm|ファーム|牧場|\(株\)|（株）|有限会社|合同会社|ホース|レーシング|クラブ|組合|HD$|Inc\.?)/i.test(text)) return false;
+  if (/(Farm|Stud|Ranch|Stable|ファーム|牧場|スタッド|\(株\)|（株）|有限会社|合同会社|ホース|レーシング|クラブ|組合|HD$|Inc\.?)/i.test(text)) return false;
   if (/^20\d{2}年\d+月\d+日$/.test(text)) return false;
   if (/^(札幌|函館|福島|新潟|東京|中山|中京|京都|阪神|小倉)$/.test(text)) return false;
   return /[ァ-ヴー一-龠々]/.test(text);
 }
 
+function horseNameBeforeTrainer(block, trainerIndex) {
+  const candidates = [];
+  for (let j = trainerIndex - 1; j >= Math.max(0, trainerIndex - 10); j -= 1) {
+    if (isHorseNameCandidate(block[j])) candidates.push({ index: j, value: block[j] });
+  }
+  return candidates.length ? candidates.reduce((best, item) => item.index < best.index ? item : best).value : block[0] || "";
+}
+
 function findHorseStarts(lines) {
   const starts = [];
+  for (let i = 0; i < lines.length - 3; i += 1) {
+    if (/^枠.+/.test(lines[i]) && /^\d+$/.test(lines[i + 1]) && isHorseNameCandidate(lines[i + 2])) {
+      starts.push(i + 2);
+    }
+  }
+  if (starts.length) return [...new Set(starts)];
+
   for (let i = 0; i < lines.length; i += 1) {
     if (!/(美浦|栗東|地方)[)）]/.test(lines[i]) || lines[i].includes("母の父")) continue;
+    const candidates = [];
     for (let j = i - 1; j >= Math.max(0, i - 8); j -= 1) {
       if (isHorseNameCandidate(lines[j])) {
-        starts.push(j);
-        break;
+        candidates.push(j);
       }
     }
+    if (candidates.length) starts.push(Math.min(...candidates));
   }
   return [...new Set(starts)];
 }
@@ -305,7 +322,7 @@ function parseRun(segment) {
 function parseHorse(block) {
   const trainerIndex = block.findIndex((x) => /(美浦|栗東|地方)[)）]/.test(x) && !x.includes("母の父"));
   const horse = {
-    name: block[0] || "",
+    name: horseNameBeforeTrainer(block, trainerIndex >= 0 ? trainerIndex : 1),
     trainer: (block[trainerIndex] || "").replace(/[（(].+[)）]/, "").trim(),
     stable: firstMatch(block[trainerIndex] || "", /[（(](.+)[)）]/),
     sexAgeColor: block.find((x) => /^[牡牝セ騙]\d+\/.+/.test(x)) || "",
