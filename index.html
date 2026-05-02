@@ -7,14 +7,14 @@
     <meta name="theme-color" content="#146b55" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="apple-touch-icon" href="./icon.svg" />
-    <link rel="stylesheet" href="./styles.css?v=6" />
+    <link rel="stylesheet" href="./styles.css?v=7" />
   </head>
   <body>
     <header class="app-header">
       <div>
         <p class="eyebrow">JRA Paste Analyst</p>
         <h1>出馬表を貼るだけで、予想材料を並べる</h1>
-        <p class="app-version">parser v6</p>
+        <p class="app-version">parser v7</p>
       </div>
       <div class="header-actions">
         <button id="loadDemo" type="button">デモ投入</button>
@@ -128,10 +128,10 @@
       </section>
     </main>
 
-    <script src="./app-v6.js?v=6"></script>
+    <script src="./app-v7.js?v=7"></script>
     <script>
       if ("serviceWorker" in navigator && location.protocol !== "file:") {
-        navigator.serviceWorker.register("./sw.js?v=6");
+        navigator.serviceWorker.register("./sw.js?v=7");
       }
     </script>
   </body>
