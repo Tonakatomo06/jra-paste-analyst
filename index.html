@@ -14,6 +14,7 @@
       <div>
         <p class="eyebrow">JRA Paste Analyst</p>
         <h1>出馬表を貼るだけで、予想材料を並べる</h1>
+        <p class="app-version">parser v4</p>
       </div>
       <div class="header-actions">
         <button id="loadDemo" type="button">デモ投入</button>
@@ -127,10 +128,10 @@
       </section>
     </main>
 
-    <script src="./app.js?v=3"></script>
+    <script src="./app-v4.js?v=4"></script>
     <script>
       if ("serviceWorker" in navigator && location.protocol !== "file:") {
-        navigator.serviceWorker.register("./sw.js?v=3");
+        navigator.serviceWorker.register("./sw.js?v=4");
       }
     </script>
   </body>
