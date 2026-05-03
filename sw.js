@@ -1,9 +1,9 @@
-const CACHE_NAME = "jra-paste-analyst-v11";
+const CACHE_NAME = "jra-paste-analyst-v12";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=11",
-  "./app-v11.js?v=11",
+  "./styles.css?v=12",
+  "./app-v12.js?v=12",
   "./manifest.webmanifest",
   "./icon.svg"
 ];
